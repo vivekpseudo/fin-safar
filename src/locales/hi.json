@@ -1,0 +1,25 @@
+{
+  "app": {
+    "name": "फिनसफर",
+    "home": "होम",
+    "learn": "सीखें",
+    "profile": "प्रोफाइल"
+  },
+  "settings": {
+    "title": "सेटिंग्स",
+    "language": "भाषा",
+    "dailyTips": "दैनिक वित्तीय सुझाव",
+    "appUpdates": "ऐप अपडेट",
+    "reminders": "अध्ययन रिमाइंडर",
+    "logout": "लॉग आउट"
+  },
+  "profile": {
+    "explorer": "फिनसफर एक्सप्लोरर",
+    "coins": "सिक्के",
+    "badges": "बैज"
+  },
+  "language": {
+    "select": "भाषा चुनें",
+    "choose": "अपनी पसंदीदा भाषा चुनें"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "app": {
+    "name": "FinSafar",
+    "home": "Home",
+    "learn": "Learn",
+    "profile": "Profile"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "dailyTips": "Daily Financial Tips",
+    "appUpdates": "App Updates",
+    "reminders": "Study Reminders",
+    "logout": "Log Out"
+  },
+  "profile": {
+    "explorer": "FinSafar Explorer",
+    "coins": "Coins",
+    "badges": "Badges"
+  },
+  "language": {
+    "select": "Select Language",
+    "choose": "Choose your preferred language"
+  }
+}

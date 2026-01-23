@@ -1,0 +1,25 @@
+{
+  "app": {
+    "name": "फिनसफर",
+    "home": "होम",
+    "learn": "शिका",
+    "profile": "प्रोफाइल"
+  },
+  "settings": {
+    "title": "सेटिंग्ज",
+    "language": "भाषा",
+    "dailyTips": "दैनिक आर्थिक टिप्स",
+    "appUpdates": "अॅप अपडेट्स",
+    "reminders": "अभ्यास स्मरणपत्रे",
+    "logout": "लॉग आउट"
+  },
+  "profile": {
+    "explorer": "फिनसफर एक्सप्लोरर",
+    "coins": "नाणी",
+    "badges": "बॅजेस"
+  },
+  "language": {
+    "select": "भाषा निवडा",
+    "choose": "तुमची पसंतीची भाषा निवडा"
+  }
+}

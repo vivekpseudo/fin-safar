@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
 import { FileText, Video, Image as ImageIcon, PlayCircle, Download } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface LearnPageProps { }
 
 export const LearnPage: React.FC<LearnPageProps> = () => {
+    const { t } = useTranslation();
     const [filter, setFilter] = useState<'all' | 'video' | 'doc'>('all');
 
     const resources = [
-        { id: 1, type: 'pdf', title: 'PMFBY Guidelines 2024', size: '2.4 MB' },
-        { id: 2, type: 'video', title: 'How to use UPI Safely?', duration: '4:20 mins' },
-        { id: 3, type: 'image', title: 'Savings Goal Chart', size: 'Image' },
-        { id: 4, type: 'pdf', title: 'Kisan Credit Card Manual', size: '1.1 MB' },
-        { id: 5, type: 'ppt', title: 'Financial Planning 101', size: '5 MB' },
-        { id: 6, type: 'video', title: 'Beware of Lottery Scams', duration: '2:15 mins' },
+        { id: 1, type: 'pdf', title: t('learn.resources.r1'), size: '2.4 MB' },
+        { id: 2, type: 'video', title: t('learn.resources.r2'), duration: '4:20 mins' },
+        { id: 3, type: 'image', title: t('learn.resources.r3'), size: 'Image' },
+        { id: 4, type: 'pdf', title: t('learn.resources.r4'), size: '1.1 MB' },
+        { id: 5, type: 'ppt', title: t('learn.resources.r5'), size: '5 MB' },
+        { id: 6, type: 'video', title: t('learn.resources.r6'), duration: '2:15 mins' },
     ];
 
     const filteredResources = filter === 'all' ? resources : resources.filter(r => r.type === filter || (filter === 'doc' && (r.type === 'pdf' || r.type === 'ppt')));
@@ -30,11 +32,11 @@ export const LearnPage: React.FC<LearnPageProps> = () => {
     return (
         <div className="space-y-6 animate-fadeIn">
             <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-slate-800">Study Materials</h2>
+                <h2 className="text-2xl font-bold text-slate-800">{t('learn.title')}</h2>
                 <div className="bg-slate-100 p-1 rounded-lg flex text-xs font-bold">
-                    <button onClick={() => setFilter('all')} className={`px-3 py-1 rounded-md ${filter === 'all' ? 'bg-white shadow' : 'text-slate-500'}`}>All</button>
-                    <button onClick={() => setFilter('video')} className={`px-3 py-1 rounded-md ${filter === 'video' ? 'bg-white shadow' : 'text-slate-500'}`}>Videos</button>
-                    <button onClick={() => setFilter('doc')} className={`px-3 py-1 rounded-md ${filter === 'doc' ? 'bg-white shadow' : 'text-slate-500'}`}>Docs</button>
+                    <button onClick={() => setFilter('all')} className={`px-3 py-1 rounded-md ${filter === 'all' ? 'bg-white shadow' : 'text-slate-500'}`}>{t('learn.filter.all')}</button>
+                    <button onClick={() => setFilter('video')} className={`px-3 py-1 rounded-md ${filter === 'video' ? 'bg-white shadow' : 'text-slate-500'}`}>{t('learn.filter.video')}</button>
+                    <button onClick={() => setFilter('doc')} className={`px-3 py-1 rounded-md ${filter === 'doc' ? 'bg-white shadow' : 'text-slate-500'}`}>{t('learn.filter.doc')}</button>
                 </div>
             </div>
 

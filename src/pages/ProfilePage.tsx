@@ -36,7 +36,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ userState, setUserStat
         const updatedNotifs = { ...notifications, [key]: !notifications[key] };
         const updatedUser = { ...userState, notifications: updatedNotifs };
         setUserState(updatedUser);
-        localStorage.setItem('finSafarUser', JSON.stringify(updatedUser)); // Ensure persistence
+        // localStorage.setItem('finSafarUser', JSON.stringify(updatedUser)); // Ensure persistence - DB is source of truth
     };
 
     return (

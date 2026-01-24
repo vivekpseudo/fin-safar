@@ -76,11 +76,11 @@ const AppContent: React.FC = () => {
                 const newState = {
                     name: u.name,
                     coins: u.coins,
-                    badges: u.badges,
+                    badges: u.badges || [],
                     isLoggedIn: u.isLoggedIn,
                     language: u.language,
                     phone: u.phone,
-                    notifications: u.notifications
+                    notifications: u.notifications || { dailyTips: true, appUpdates: true, reminders: false }
                 };
                 setUserState(newState);
 
@@ -117,6 +117,7 @@ const AppContent: React.FC = () => {
     };
 
     const handleLanguageSelect = (lang: any) => {
+        i18n.changeLanguage(lang.code);
         UserService.updateUser({ language: lang.code });
         // Local state update happens via subscription, but for flow control we might need to wait or just assume
         setAuthStep('carousel');
@@ -146,6 +147,7 @@ const AppContent: React.FC = () => {
     };
 
     const handleSettingsLanguageSelect = (lang: any) => {
+        i18n.changeLanguage(lang.code);
         UserService.updateUser({ language: lang.code });
         navigate('/profile');
     };

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ShoppingBag } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { useTranslation } from 'react-i18next';
 
 interface MarketMandiGameProps {
     harvestQty: number;
@@ -8,6 +9,7 @@ interface MarketMandiGameProps {
 }
 
 export const MarketMandiGame: React.FC<MarketMandiGameProps> = ({ harvestQty, onSellComplete }) => {
+    const { t } = useTranslation();
     const [day, setDay] = useState(1);
     const [price, setPrice] = useState(20); // Starting price per kg
     const [history, setHistory] = useState<number[]>([20]);
@@ -46,13 +48,13 @@ export const MarketMandiGame: React.FC<MarketMandiGameProps> = ({ harvestQty, on
         <div className="space-y-4 animate-fadeIn">
             <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
                 <h4 className="font-bold text-yellow-800 flex items-center gap-2">
-                    <ShoppingBag size={20} /> Level 2: Mandi Master
+                    <ShoppingBag size={20} /> {t('games.mandi.title')}
                 </h4>
-                <p className="text-sm text-yellow-700">Prices change daily. Sell when the price is high! Auto-sell on Day 10.</p>
+                <p className="text-sm text-yellow-700">{t('games.mandi.desc')}</p>
             </div>
 
             <div className="text-center py-6">
-                <div className="text-sm text-slate-500 uppercase tracking-wide">Current Mandi Price (Day {day}/10)</div>
+                <div className="text-sm text-slate-500 uppercase tracking-wide">{t('games.mandi.currentPrice', { day })}</div>
                 <div className="text-4xl font-bold text-slate-800 my-2">₹{price}/kg</div>
                 <div className="h-16 flex items-end justify-center gap-1">
                     {history.map((h, i) => (
@@ -67,11 +69,11 @@ export const MarketMandiGame: React.FC<MarketMandiGameProps> = ({ harvestQty, on
 
             {!sold ? (
                 <Button onClick={() => handleSell(price)} variant="success">
-                    Sell {harvestQty}kg Now (Total: ₹{(price * harvestQty).toLocaleString()})
+                    {t('games.mandi.sellNow', { qty: harvestQty, total: (price * harvestQty).toLocaleString() })}
                 </Button>
             ) : (
                 <div className="text-center p-4 bg-green-100 text-green-800 rounded-lg font-bold">
-                    Sold at ₹{price}/kg!
+                    {t('games.mandi.soldAt', { price })}
                 </div>
             )}
         </div>

@@ -1,30 +1,32 @@
 import React, { useState } from 'react';
 import { Smartphone, Trophy, ShieldCheck, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { useTranslation } from 'react-i18next';
 
 interface OnboardingCarouselProps {
     onNext: () => void;
 }
 
 export const OnboardingCarousel: React.FC<OnboardingCarouselProps> = ({ onNext }) => {
+    const { t } = useTranslation();
     const [slide, setSlide] = useState(0);
 
     const slides = [
         {
-            title: "Play & Learn Finance",
-            desc: "Master farming, business, and savings through fun games.",
+            title: t('carousel.slide1.title'),
+            desc: t('carousel.slide1.desc'),
             icon: <Smartphone size={64} className="text-orange-500" />,
             color: "bg-orange-50"
         },
         {
-            title: "Earn Rewards",
-            desc: "Collect coins and badges as you improve your financial skills.",
+            title: t('carousel.slide2.title'),
+            desc: t('carousel.slide2.desc'),
             icon: <Trophy size={64} className="text-yellow-500" />,
             color: "bg-yellow-50"
         },
         {
-            title: "Safe & Secure",
-            desc: "Learn to protect your money from scams and fraud.",
+            title: t('carousel.slide3.title'),
+            desc: t('carousel.slide3.desc'),
             icon: <ShieldCheck size={64} className="text-green-500" />,
             color: "bg-green-50"
         }
@@ -58,7 +60,7 @@ export const OnboardingCarousel: React.FC<OnboardingCarouselProps> = ({ onNext }
                 </div>
 
                 <Button onClick={handleNext}>
-                    {slide === slides.length - 1 ? "Get Started" : "Next"} <ArrowRight size={20} />
+                    {slide === slides.length - 1 ? t('carousel.getStarted') : t('carousel.next')} <ArrowRight size={20} />
                 </Button>
             </div>
         </div>

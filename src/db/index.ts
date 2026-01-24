@@ -4,8 +4,11 @@ import LokiJSAdapter from '@nozbe/watermelondb/adapters/lokijs'
 import { mySchema } from './schema'
 import User from './models/User'
 
+import migrations from './migrations'
+
 const adapter = new LokiJSAdapter({
     schema: mySchema,
+    migrations,
     // (You might want to comment out the following line in production)
     useWebWorker: false,
     useIncrementalIndexedDB: true,

@@ -8,10 +8,14 @@ export default schemaMigrations({
                 addColumns({
                     table: 'users',
                     columns: [
-                        { name: 'notifications', type: 'string' },
+                        { name: 'notifications', type: 'string', isOptional: true },
                     ],
                 }),
             ],
+        },
+        {
+            toVersion: 3,
+            steps: [],
         },
     ],
 })

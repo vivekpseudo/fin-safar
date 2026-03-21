@@ -30,6 +30,9 @@ export const requestUserPermission = async () => {
 
 const getFcmToken = async () => {
     try {
+        if (!messaging().isDeviceRegisteredForRemoteMessages) {
+            await messaging().registerDeviceForRemoteMessages();
+        }
         const fcmToken = await messaging().getToken();
         if (fcmToken) {
             console.log('Firebase Cloud Messaging Token:', fcmToken);

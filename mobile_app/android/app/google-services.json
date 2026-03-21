@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "920213124878",
+    "project_id": "finsafer-19179",
+    "storage_bucket": "finsafer-19179.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:920213124878:android:5cd40e3e5161944eb2895f",
+        "android_client_info": {
+          "package_name": "com.finsafarmobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNSbfMFKz5uR1shzzCmedSdkP9KRQwibc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

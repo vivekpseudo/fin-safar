@@ -96,11 +96,13 @@ const MainApp = () => {
   );
 };
 
+import { AppNavigation } from './src/App';
+
 const App = () => {
   return (
     <SafeAreaProvider>
       <ThemeProvider>
-        <MainApp />
+        <AppNavigation />
       </ThemeProvider>
     </SafeAreaProvider>
   );

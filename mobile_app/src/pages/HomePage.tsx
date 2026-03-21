@@ -97,19 +97,20 @@ const styles = StyleSheet.create({
     },
     header: {
         alignItems: 'center',
-        marginTop: 16,
-        marginBottom: 24,
+        marginVertical: 30,
     },
     welcomeText: {
         fontSize: 28,
         fontWeight: '900',
         color: '#1e293b',
         marginBottom: 8,
+        textAlign: 'center',
     },
     subtitleText: {
         fontSize: 16,
         color: '#475569',
         marginBottom: 24,
+        textAlign: 'center'
     },
     tipWrapper: {
         width: '100%',
@@ -126,9 +127,9 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         marginBottom: 16,
         borderWidth: 1,
-        borderColor: '#f1f5f9',
+        borderColor: '#ea580c',
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
+        shadowOffset: { width: 0.5, height: 2 },
         shadowOpacity: 0.05,
         shadowRadius: 2,
         elevation: 1,
@@ -180,5 +181,7 @@ const styles = StyleSheet.create({
     badgeWrapper: {
         width: '48%',
         marginBottom: 12,
+        justifyContent: 'center',
+        alignItems: 'center',
     }
 });

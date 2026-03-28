@@ -1,12 +1,14 @@
 import React, { useState, useRef } from 'react';
 import { ShieldCheck, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { useTranslation } from 'react-i18next';
 
 interface AuthScreenProps {
     onLogin: (phone: string) => void;
 }
 
 export const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
+    const { t } = useTranslation();
     const [step, setStep] = useState<'phone' | 'otp'>('phone');
     const [phone, setPhone] = useState('');
     const [otp, setOtp] = useState(['', '', '', '']);
@@ -15,7 +17,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
     const handlePhoneSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (phone.length === 10) setStep('otp');
-        else alert("Please enter a valid 10-digit number");
+        else alert(t('auth.invalidMobile'));
     };
 
     const handleOtpChange = (index: number, value: string) => {
@@ -68,7 +70,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
         if (otp.join('').length === 4) {
             onLogin(phone);
         } else {
-            alert("Please enter valid OTP (Any 4 digits)");
+            alert(t('auth.invalidOtp'));
         }
     };
 
@@ -79,17 +81,17 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
                     <ShieldCheck size={40} className="text-orange-600" />
                 </div>
                 <h2 className="text-2xl font-bold text-slate-800">
-                    {step === 'phone' ? "Welcome to FinSafar" : "Verify OTP"}
+                    {step === 'phone' ? t('auth.welcome') : t('auth.verifyTitle')}
                 </h2>
                 <p className="text-slate-500">
-                    {step === 'phone' ? "Enter your mobile number to login" : `Sent to +91 ${phone}`}
+                    {step === 'phone' ? t('auth.enterMobile') : t('auth.sentTo', { phone })}
                 </p>
             </div>
 
             {step === 'phone' ? (
                 <form onSubmit={handlePhoneSubmit} className="space-y-6">
                     <div className="space-y-2">
-                        <label className="text-sm font-bold text-slate-700">Mobile Number</label>
+                        <label className="text-sm font-bold text-slate-700">{t('auth.mobileLabel')}</label>
                         <div className="flex items-center border-2 border-slate-200 rounded-lg overflow-hidden focus-within:border-orange-500">
                             <span className="bg-slate-100 px-3 py-3 text-slate-500 font-bold border-r">+91</span>
                             <input
@@ -97,12 +99,12 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
                                 value={phone}
                                 onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
                                 maxLength={10}
-                                placeholder="98765 43210"
+                                placeholder={t('auth.placeholder')}
                                 className="w-full p-3 outline-none font-bold text-slate-800 tracking-widest"
                             />
                         </div>
                     </div>
-                    <Button type="submit">Send OTP <ChevronRight size={20} /></Button>
+                    <Button type="submit">{t('auth.sendOtp')} <ChevronRight size={20} /></Button>
                 </form>
             ) : (
                 <div className="space-y-8">
@@ -121,9 +123,9 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
                             />
                         ))}
                     </div>
-                    <Button onClick={handleVerify}>Verify & Login</Button>
+                    <Button onClick={handleVerify}>{t('auth.verifyLogin')}</Button>
                     <button onClick={() => setStep('phone')} className="w-full text-center text-sm text-slate-500 font-semibold">
-                        Change Mobile Number
+                        {t('auth.changeNumber')}
                     </button>
                 </div>
             )}

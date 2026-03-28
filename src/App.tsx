@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { TrendingUp, Home, BookOpen, User, Coins, ArrowRight } from 'lucide-react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { UserService } from './services/UserService';
+import { startAutoSync } from './db/sync';
 
 // Features
 import { SplashScreen } from './features/onboarding/SplashScreen';
@@ -57,20 +59,39 @@ const AppContent: React.FC = () => {
     });
     const [showTip, setShowTip] = useState(true);
 
-    // Initial Load
+    // Initial Load & Subscription
     useEffect(() => {
-        const saved = localStorage.getItem('finSafarUser');
-        if (saved) {
-            const parsed = JSON.parse(saved);
-            setUserState(prev => ({
-                ...prev,
-                ...parsed,
-                notifications: parsed.notifications || prev.notifications
-            }));
-            if (parsed.language) {
-                i18n.changeLanguage(parsed.language);
+        const init = async () => {
+            let user = await UserService.getCurrentUser();
+            if (!user) {
+                await UserService.createGuestUser();
             }
-        }
+            startAutoSync();
+        };
+        init();
+
+        const subscription = UserService.observeUser().subscribe(users => {
+            if (users.length > 0) {
+                const u = users[0];
+                const newState = {
+                    name: u.name,
+                    coins: u.coins,
+                    badges: u.badges || [],
+                    isLoggedIn: u.isLoggedIn,
+                    language: u.language,
+                    phone: u.phone,
+                    notifications: u.notifications || { dailyTips: true, appUpdates: true, reminders: false }
+                };
+                setUserState(newState);
+
+                // Sync UI state
+                if (u.language && u.language !== i18n.language) {
+                    i18n.changeLanguage(u.language);
+                }
+            }
+        });
+
+        return () => subscription.unsubscribe();
     }, [i18n]);
 
     // Sync language changes
@@ -82,8 +103,8 @@ const AppContent: React.FC = () => {
 
     // Handlers
     const saveProgress = (newState: UserState) => {
-        setUserState(newState);
-        localStorage.setItem('finSafarUser', JSON.stringify(newState));
+        // We now update DB directly, which triggers the subscription above to update local state
+        UserService.updateUser(newState);
     };
 
     const handleSplashFinish = () => {
@@ -96,42 +117,42 @@ const AppContent: React.FC = () => {
     };
 
     const handleLanguageSelect = (lang: any) => {
-        setUserState({ ...userState, language: lang.code });
+        i18n.changeLanguage(lang.code);
+        UserService.updateUser({ language: lang.code });
+        // Local state update happens via subscription, but for flow control we might need to wait or just assume
         setAuthStep('carousel');
     };
 
     const handleLogin = (phone: string) => {
-        const newState = { ...userState, isLoggedIn: true, phone: phone, name: 'Guest User' };
-        saveProgress(newState);
+        UserService.updateUser({ isLoggedIn: true, phone: phone, name: 'Guest User' });
         setAuthStep('done');
         navigate('/');
     };
 
     const handleLogout = () => {
-        const newState = { ...userState, isLoggedIn: false };
-        saveProgress(newState);
+        UserService.updateUser({ isLoggedIn: false });
         setAuthStep('auth');
         navigate('/');
     };
 
     const handleModuleComplete = (coinsEarned: number, badgeName: string) => {
         const hasBadge = userState.badges.includes(badgeName);
-        const newState = {
-            ...userState,
-            coins: userState.coins + coinsEarned,
-            badges: hasBadge ? userState.badges : [...userState.badges, badgeName]
-        };
-        saveProgress(newState);
+        const newBadges = hasBadge ? userState.badges : [...userState.badges, badgeName];
+        const newCoins = userState.coins + coinsEarned;
+
+        UserService.updateUser({
+            coins: newCoins,
+            badges: newBadges
+        });
     };
 
     const handleSettingsLanguageSelect = (lang: any) => {
-        setUserState({ ...userState, language: lang.code });
-        saveProgress({ ...userState, language: lang.code });
+        i18n.changeLanguage(lang.code);
+        UserService.updateUser({ language: lang.code });
         navigate('/profile');
     };
 
     // Render Logic for specific routes that need layout vs full screen
-    const isFullScreen = authStep !== 'done';
 
     if (authStep === 'splash') return <SplashScreen onFinish={handleSplashFinish} />;
     if (authStep === 'language') return <LanguageSelection onSelect={handleLanguageSelect} />;

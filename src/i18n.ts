@@ -5,7 +5,9 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import en from './locales/en.json';
 import hi from './locales/hi.json';
 import mr from './locales/mr.json';
-
+import ta from './locales/ta.json';
+import te from './locales/te.json';
+import kn from './locales/kn.json';
 // Initialize with a simple configuration
 i18n
     .use(LanguageDetector)
@@ -16,9 +18,9 @@ i18n
             hi: { translation: hi },
             mr: { translation: mr },
             // Add others as they are created
-            ta: { translation: en }, // Fallback to en for now
-            te: { translation: en },
-            kn: { translation: en }
+            ta: { translation: ta },
+            te: { translation: te },
+            kn: { translation: kn }
         },
         fallbackLng: 'en',
         interpolation: {

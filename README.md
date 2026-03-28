@@ -2,6 +2,10 @@
 
 FinSafar is a gamified financial literacy learning platform designed to empower users across India with essential financial knowledge. Through interactive modules, role-playing personas, and engaging mini-games, users learn about saving, investing, fraud prevention, and budgeting.
 
+## 📱 Mobile App
+
+The FinSafar platform also includes a fully featured React Native mobile application for iOS and Android. For instructions on how to run, build, and deploy the mobile app, please check out the [Mobile App README](./mobile_app/README.md).
+
 ## 🚀 Features
 
 *   **Role-Based Learning**: Tailored learning paths for different user personas:

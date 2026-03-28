@@ -1,27 +1,69 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { Sprout, Home as HomeIcon, BookOpen, Briefcase, Trophy, ShieldCheck, Coins, TrendingUp } from 'lucide-react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Badge } from '../components/ui/Badge';
 import { TipCard } from '../components/ui/TipCard';
 import { useTranslation } from 'react-i18next';
+import { getTodayTipId } from '../data/tips';
 
 interface HomePageProps {
     userState: any;
-    showTip: boolean;
-    setShowTip: (show: boolean) => void;
-    selectPersona: (id: string) => void;
+    selectPersona?: (id: string) => void;
 }
 
 const Personas = [
-    { id: 'farmer', icon: Sprout, color: '#16a34a', bg: '#f0fdf4' }, // green
-    { id: 'woman', icon: HomeIcon, color: '#9333ea', bg: '#faf5ff' }, // purple
-    { id: 'student', icon: BookOpen, color: '#2563eb', bg: '#eff6ff' }, // blue
-    { id: 'young_adult', icon: Briefcase, color: '#4f46e5', bg: '#eef2ff' }, // indigo
+    { id: 'farmer', icon: Sprout, color: '#16a34a', bg: '#f0fdf4', langKey: 'farmer' },
+    { id: 'woman', icon: HomeIcon, color: '#9333ea', bg: '#faf5ff', langKey: 'woman' },
+    { id: 'student', icon: BookOpen, color: '#2563eb', bg: '#eff6ff', langKey: 'student' },
+    { id: 'young_adult', icon: Briefcase, color: '#4f46e5', bg: '#eef2ff', langKey: 'professional' },
 ];
 
-export const HomePage: React.FC<HomePageProps> = ({ userState, showTip, setShowTip, selectPersona }) => {
-    const { t } = useTranslation();
+const getTodayKey = (): string => {
+    const today = new Date();
+    return `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+};
 
+export const HomePage: React.FC<HomePageProps> = ({ userState }) => {
+    const { t } = useTranslation();
+    const navigation = useNavigation<any>();
+    const [showTip, setShowTip] = useState(false);
+    const todayTipId = getTodayTipId();
+
+    useEffect(() => {
+        checkTipVisibility();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const checkTipVisibility = async () => {
+        try {
+            const todayKey = getTodayKey();
+            const dismissed = await AsyncStorage.getItem(`tip-dismissed-${todayKey}`);
+            if (!dismissed && userState.notifications?.dailyTips) {
+                setShowTip(true);
+            }
+        } catch {
+            if (userState.notifications?.dailyTips) {
+                setShowTip(true);
+            }
+        }
+    };
+
+    const handleDismissTip = async () => {
+        try {
+            const todayKey = getTodayKey();
+            await AsyncStorage.setItem(`tip-dismissed-${todayKey}`, 'true');
+            setShowTip(false);
+        } catch {
+            setShowTip(false);
+        }
+    };
+
+   const handleSelectPersona = (id: string) => {
+     console.log("NAVIGATING TO:", id);
+    navigation.navigate('ModuleParams', { personaId: id });
+};
     return (
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
             <View style={styles.header}>
@@ -30,39 +72,35 @@ export const HomePage: React.FC<HomePageProps> = ({ userState, showTip, setShowT
 
                 {userState.notifications?.dailyTips && showTip && (
                     <View style={styles.tipWrapper}>
-                        <TipCard onClose={() => setShowTip(false)} />
+                        <TipCard tipId={todayTipId} onClose={handleDismissTip} />
                     </View>
                 )}
             </View>
 
             <View style={styles.grid}>
-                {Personas.map((p) => {
-                    const keyMap: Record<string, string> = {
-                        'young_adult': 'professional'
-                    };
-                    const langKey = keyMap[p.id] || p.id;
-
-                    return (
-                        <TouchableOpacity
-                            key={p.id}
-                            onPress={() => selectPersona(p.id)}
-                            style={styles.card}
-                            activeOpacity={0.7}
-                        >
-                            <View style={[styles.iconContainer, { backgroundColor: p.bg }]}>
-                                <p.icon size={28} color={p.color} />
-                            </View>
-                            <View style={styles.textContainer}>
-                                <Text style={styles.cardTitle}>{t(`home.personas.${langKey}.title`)}</Text>
-                                <Text style={styles.cardDesc}>{t(`home.personas.${langKey}.desc`)}</Text>
-                            </View>
-                        </TouchableOpacity>
-                    );
-                })}
+                {Personas.map((p) => (
+                    <TouchableOpacity
+                        key={p.id}
+                        onPress={() => handleSelectPersona(p.id)}
+                        style={styles.card}
+                        activeOpacity={0.7}
+                    >
+                   <View style={[styles.iconContainer, { backgroundColor: p.bg }]}>
+    <p.icon size={28} color={p.color} />
+</View>
+                        <View style={styles.textContainer}>
+                            <Text style={styles.cardTitle}>
+                                {t(`home.personas.${p.langKey}.title`)}
+                            </Text>
+                            <Text style={styles.cardDesc}>
+                                {t(`home.personas.${p.langKey}.desc`)}
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+                ))}
             </View>
 
-            {/* BADGES SHOWCASE */}
-            <View style={styles.badgesSection}>
+           <View style={styles.badgesSection}>
                 <View style={styles.badgesHeader}>
                     <Trophy size={18} color="#eab308" />
                     <Text style={styles.badgesTitle}>{t('home.achievements')}</Text>
@@ -101,7 +139,7 @@ const styles = StyleSheet.create({
     },
     welcomeText: {
         fontSize: 28,
-        fontWeight: '900',
+        fontWeight: '800',
         color: '#1e293b',
         marginBottom: 8,
         textAlign: 'center',
@@ -110,10 +148,11 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#475569',
         marginBottom: 24,
-        textAlign: 'center'
+        textAlign: 'center',
     },
     tipWrapper: {
         width: '100%',
+        alignItems: 'center',
     },
     grid: {
         flexDirection: 'row',
@@ -127,12 +166,12 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         marginBottom: 16,
         borderWidth: 1,
-        borderColor: '#ea580c',
+        borderColor: '#f1f5f9',
         shadowColor: '#000',
-        shadowOffset: { width: 0.5, height: 2 },
+        shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.05,
-        shadowRadius: 2,
-        elevation: 1,
+        shadowRadius: 4,
+        elevation: 2,
     },
     iconContainer: {
         padding: 12,
@@ -145,7 +184,7 @@ const styles = StyleSheet.create({
     },
     cardTitle: {
         fontSize: 16,
-        fontWeight: 'bold',
+        fontWeight: '700',
         color: '#1e293b',
         marginBottom: 4,
     },
@@ -161,17 +200,22 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#f1f5f9',
         marginTop: 8,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.05,
+        shadowRadius: 3,
+        elevation: 1,
     },
     badgesHeader: {
         flexDirection: 'row',
         alignItems: 'center',
+        gap: 8,
         marginBottom: 16,
     },
     badgesTitle: {
         fontSize: 16,
-        fontWeight: 'bold',
+        fontWeight: '700',
         color: '#1e293b',
-        marginLeft: 8,
     },
     badgesGrid: {
         flexDirection: 'row',
@@ -183,5 +227,5 @@ const styles = StyleSheet.create({
         marginBottom: 12,
         justifyContent: 'center',
         alignItems: 'center',
-    }
+    },
 });

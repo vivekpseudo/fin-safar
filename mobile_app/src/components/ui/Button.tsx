@@ -3,6 +3,7 @@ import { TouchableOpacity, Text, StyleSheet, StyleProp, ViewStyle, TextStyle } f
 
 interface ButtonProps {
     onClick?: () => void;
+    onPress?: () => void; 
     children: React.ReactNode;
     variant?: 'primary' | 'secondary' | 'outline' | 'danger' | 'success';
     disabled?: boolean;

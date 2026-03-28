@@ -22,23 +22,16 @@ export const StudentModule: React.FC<StudentModuleProps> = ({ onComplete }) => {
     ];
 
     const handleChoice = (choice: 'need' | 'want') => {
-        const item = items[currentItemIndex];
-        if (item.type === choice) {
-            setScore(s => s + 10);
-        } else {
-            setScore(s => Math.max(0, s - 5));
-        }
-
-        if (currentItemIndex < items.length - 1) {
-            setCurrentItemIndex(i => i + 1);
-        } else {
+        const item = items[currentItemIndex]; if (item.type === choice) 
+            { setScore(s => s + 10); } else { setScore(s => Math.max(0, s - 5)); } 
+        if (currentItemIndex < items.length - 1) 
+            { setCurrentItemIndex(i => i + 1); } 
+        else {
             if (score >= 30) {
-                onComplete(50, "Savings Scout");
-                setLevel(2); // Unlock Scam Smash
+                onComplete(50, "Savings Scout"); setLevel(2);
             }
         }
     };
-
     if (level === 2) {
         return <ScamSmashGame onComplete={onComplete} />;
     }

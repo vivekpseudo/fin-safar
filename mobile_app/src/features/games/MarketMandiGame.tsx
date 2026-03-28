@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { ShoppingBag } from 'lucide-react-native';
 import { Button } from '../../components/ui/Button';
@@ -16,33 +16,32 @@ export const MarketMandiGame: React.FC<MarketMandiGameProps> = ({ harvestQty, on
     const [history, setHistory] = useState<number[]>([20]);
     const [sold, setSold] = useState(false);
 
-    const handleSell = (finalPrice: number) => {
-        setSold(true);
-        onSellComplete(finalPrice * harvestQty, finalPrice);
-    };
+   const handleSell = useCallback((finalPrice: number) => {
+    setSold(true);
+    onSellComplete(finalPrice * harvestQty, finalPrice);
+}, [harvestQty, onSellComplete]);
 
-    useEffect(() => {
-        if (sold) return;
+useEffect(() => {
+    if (sold) return;
 
-        if (day >= 10) {
-            handleSell(price);
-            return;
-        }
+    if (day >= 10) {
+        handleSell(price);
+        return;
+    }
 
-        const timer = setInterval(() => {
-            setDay(prev => prev + 1);
+    const timer = setInterval(() => {
+        setDay(prev => prev + 1);
 
-            setPrice(prev => {
-                const change = Math.floor(Math.random() * 5) - 2;
-                const newPrice = Math.max(15, prev + change);
-                setHistory(h => [...h, newPrice]);
-                return newPrice;
-            });
-        }, 1500);
+        setPrice(prev => {
+            const change = Math.floor(Math.random() * 5) - 2;
+            const newPrice = Math.max(15, prev + change);
+            setHistory(h => [...h, newPrice]);
+            return newPrice;
+        });
+    }, 1500);
 
-        return () => clearInterval(timer);
-    }, [sold, day]);
-
+    return () => clearInterval(timer);
+}, [sold, day, price, handleSell]); // ✅ add price
     return (
         <View style={styles.container}>
             <View style={styles.introCard}>
@@ -72,7 +71,7 @@ export const MarketMandiGame: React.FC<MarketMandiGameProps> = ({ harvestQty, on
             </View>
 
             {!sold ? (
-                <Button onClick={() => handleSell(price)} variant="primary">
+                <Button onPress={() => handleSell(price)} variant="primary">
                     <Text style={styles.buttonText}>
                         {t('games.mandi.sellNow', { qty: harvestQty, total: (price * harvestQty).toLocaleString() })}
                     </Text>

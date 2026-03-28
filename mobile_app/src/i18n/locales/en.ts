@@ -72,7 +72,7 @@ export default {
             "subtitle": "Choose your character to start your journey towards financial freedom.",
             "achievements": "Your Achievements",
             "personas": {
-                "farmer": { "title": "Kisan (Farmer)", "desc": "Manage crops, loans, and insurance." },
+                "farmer": { "title": "Farmer", "desc": "Manage crops, loans, and insurance." },
                 "woman": { "title": "Entrepreneur", "desc": "Balance household & business budgets." },
                 "student": { "title": "Student", "desc": "Learn to save pocket money." },
                 "professional": { "title": "Professional", "desc": "Plan salary, tax, and retirement." }

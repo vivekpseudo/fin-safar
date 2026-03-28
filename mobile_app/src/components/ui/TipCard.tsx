@@ -1,23 +1,19 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 import { Lightbulb, X } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 
 interface TipCardProps {
+    tipId: number;
     onClose: () => void;
 }
 
-export const TipCard: React.FC<TipCardProps> = ({ onClose }) => {
+export const TipCard: React.FC<TipCardProps> = ({ tipId, onClose }) => {
     const { t } = useTranslation();
-    const [tipIndex, setTipIndex] = useState(1);
     const slideAnim = useRef(new Animated.Value(20)).current;
     const opacityAnim = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
-        // Random tip from 1 to 10
-        setTipIndex(Math.floor(Math.random() * 10) + 1);
-
-        // Slide up animation
         Animated.parallel([
             Animated.timing(slideAnim, {
                 toValue: 0,
@@ -32,14 +28,14 @@ export const TipCard: React.FC<TipCardProps> = ({ onClose }) => {
         ]).start();
     }, []);
 
-    const tip = t(`tips.t${tipIndex}`);
+    const tip = t(`tips.t${tipId}`);
 
     return (
         <Animated.View style={[
-            styles.container, 
-            { 
+            styles.container,
+            {
                 opacity: opacityAnim,
-                transform: [{ translateY: slideAnim }] 
+                transform: [{ translateY: slideAnim }]
             }
         ]}>
             <View style={styles.leftBorder} />
@@ -52,7 +48,7 @@ export const TipCard: React.FC<TipCardProps> = ({ onClose }) => {
                     <Text style={styles.tipText}>{tip}</Text>
                 </View>
             </View>
-            <TouchableOpacity onPress={onClose} style={styles.closeButton} hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
+            <TouchableOpacity onPress={onClose} style={styles.closeButton} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
                 <X size={16} color="#fdba74" />
             </TouchableOpacity>
         </Animated.View>
@@ -61,7 +57,7 @@ export const TipCard: React.FC<TipCardProps> = ({ onClose }) => {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#fff7ed', // orange-50
+        backgroundColor: '#fff7ed',
         borderRadius: 12,
         borderTopLeftRadius: 4,
         borderBottomLeftRadius: 4,
@@ -82,16 +78,16 @@ const styles = StyleSheet.create({
         top: 0,
         bottom: 0,
         width: 4,
-        backgroundColor: '#f97316', // orange-500
+        backgroundColor: '#f97316',
     },
     content: {
         flex: 1,
         flexDirection: 'row',
         padding: 16,
-        paddingLeft: 20, // extra padding for the absolute left border
+        paddingLeft: 20,
     },
     iconContainer: {
-        backgroundColor: '#ffedd5', // orange-100
+        backgroundColor: '#ffedd5',
         padding: 8,
         borderRadius: 20,
         marginRight: 12,
@@ -103,13 +99,13 @@ const styles = StyleSheet.create({
     },
     title: {
         fontWeight: 'bold',
-        color: '#9a3412', // orange-800
+        color: '#9a3412',
         fontSize: 12,
         textTransform: 'uppercase',
         letterSpacing: 0.5,
     },
     tipText: {
-        color: '#334155', // slate-700
+        color: '#334155',
         fontWeight: '500',
         marginTop: 4,
         fontSize: 14,

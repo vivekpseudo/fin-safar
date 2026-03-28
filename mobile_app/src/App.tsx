@@ -51,9 +51,7 @@ const MainTabs = ({ userState, setUserState, onLogout }: any) => {
                     <HomePage 
                         {...props} 
                         userState={userState} 
-                        showTip={true} 
-                        setShowTip={() => {}} 
-                        selectPersona={(id) => props.navigation.navigate('ModuleParams', { personaId: id })} 
+                        
                     />
                 )}
             </Tab.Screen>
@@ -192,7 +190,12 @@ export const AppNavigation = () => {
                                     case 'woman': return <WomanModule onComplete={onComplete} />;
                                     case 'student': return <StudentModule onComplete={onComplete} />;
                                     case 'young_adult': return <YoungAdultModule onComplete={onComplete} />;
-                                    default: return <HomePage userState={userState} showTip={false} setShowTip={() => {}} selectPersona={() => {}} />;
+                                   default: return (
+    <HomePage 
+        userState={userState} 
+        selectPersona={(id) => navigation.navigate('ModuleParams', { personaId: id })} 
+    />
+);
                                 }
                             }}
                         </Stack.Screen>
@@ -203,10 +206,14 @@ export const AppNavigation = () => {
                             {(props) => (
                                 <LanguageSelection 
                                     {...props} 
-                                    onSelect={(lang: any) => {
-                                        i18n.changeLanguage(lang.code);
-                                        UserService.updateUser({ language: lang.code });
-                                        props.navigation.goBack();
+                                   onSelect={(lang: any) => {
+    i18n.changeLanguage(lang.code);
+    UserService.updateUser({ language: lang.code });
+
+    
+    setTimeout(() => {
+        props.navigation.goBack();
+    }, 100);
                                     }} 
                                 />
                             )}

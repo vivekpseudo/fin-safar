@@ -22,27 +22,30 @@ export const StudentModule: React.FC<StudentModuleProps> = ({ onComplete }) => {
         { id: 5, name: t('modules.student.items.lunch'), type: "need" }
     ];
 
-    const handleChoice = (choice: 'need' | 'want') => {
-        const item = items[currentItemIndex];
-        if (item.type === choice) {
-            setScore(s => s + 10);
-        } else {
-            setScore(s => Math.max(0, s - 5));
-        }
+   const handleChoice = (choice: 'need' | 'want') => {
+    const item = items[currentItemIndex];
 
-        if (currentItemIndex < items.length - 1) {
-            setCurrentItemIndex(i => i + 1);
+    let newScore = score;
+
+    if (item.type === choice) {
+        newScore = score + 10;
+    } else {
+        newScore = Math.max(0, score - 5);
+    }
+
+    setScore(newScore);
+
+    if (currentItemIndex < items.length - 1) {
+        setCurrentItemIndex(i => i + 1);
+    } else {
+        
+        if (newScore >= 30) {
+            setLevel(2); 
         } else {
-            if (score >= 30) {
-                onComplete(50, "Savings Scout");
-                setLevel(2); // Unlock Scam Smash
-            } else {
-                // If they fail to get enough score to progress, they just finish level 1
-                // Might want a retry screen, but following web logic:
-                onComplete(score, "Savings Scout"); 
-            }
+            onComplete(newScore, "Savings Scout"); 
         }
-    };
+    }
+};
 
     if (level === 2) {
         return <ScamSmashGame onComplete={onComplete} />;

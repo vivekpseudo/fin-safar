@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Animated, ScrollView } from 'react-native';
 import { Languages } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 
@@ -18,13 +18,31 @@ export const LanguageSelection: React.FC<LanguageSelectionProps> = ({ onSelect }
     const slideAnim = useRef(new Animated.Value(20)).current;
     const opacityAnim = useRef(new Animated.Value(0)).current;
 
+
     const languages: Language[] = [
         { code: 'en', label: 'English', native: 'English' },
         { code: 'hi', label: 'Hindi', native: 'हिंदी' },
         { code: 'mr', label: 'Marathi', native: 'मराठी' },
         { code: 'ta', label: 'Tamil', native: 'தமிழ்' },
         { code: 'te', label: 'Telugu', native: 'తెలుగు' },
-        { code: 'kn', label: 'Kannada', native: 'कन्नड़' },
+        { code: 'kn', label: 'Kannada', native: 'ಕನ್ನಡ' },
+        { code: 'bn', label: 'Bengali', native: 'বাংলা' },
+        { code: 'gu', label: 'Gujarati', native: 'ગુજરાતી' },
+        { code: 'ml', label: 'Malayalam', native: 'മലയാളം' },
+        { code: 'or', label: 'Odia', native: 'ଓଡ଼ିଆ' },
+        { code: 'pa', label: 'Punjabi', native: 'ਪੰਜਾਬੀ' },
+        { code: 'ur', label: 'Urdu', native: 'اردو' },
+        { code: 'as', label: 'Assamese', native: 'অসমীয়া' },
+        { code: 'br', label: 'Bodo', native: 'बड़ो' },
+        { code: 'do', label: 'Dogri', native: 'डोगरी' },
+        { code: 'ks', label: 'Kashmiri', native: 'कश्मीरी' },
+        { code: 'ko', label: 'Konkani', native: 'कोंकणी' },
+        { code: 'mai', label: 'Maithili', native: 'मैथिली' },
+        { code: 'mni', label: 'Manipuri (Meitei)', native: 'ꯃꯩꯇꯩ ꯂꯣꯟ' },
+        { code: 'ne', label: 'Nepali', native: 'नेपाली' },
+        { code: 'sa', label: 'Sanskrit', native: 'संस्कृत' },
+        { code: 'sat', label: 'Santhali', native: 'ᱥᱟᱱᱛᱟᱲᱤ' },
+        { code: 'sd', label: 'Sindhi', native: 'सिन्धी' },
     ];
 
     useEffect(() => {
@@ -51,20 +69,21 @@ export const LanguageSelection: React.FC<LanguageSelectionProps> = ({ onSelect }
                 </View>
                 <Text style={styles.subtitle}>{t('language.choose')}</Text>
             </View>
-
-            <View style={styles.grid}>
-                {languages.map((lang) => (
-                    <TouchableOpacity
-                        key={lang.code}
-                        onPress={() => onSelect(lang)}
-                        style={styles.card}
-                        activeOpacity={0.7}
-                    >
-                        <Text style={styles.nativeText}>{lang.native}</Text>
-                        <Text style={styles.label}>{lang.label}</Text>
-                    </TouchableOpacity>
-                ))}
-            </View>
+            <ScrollView style={{ flex: 1 }}>
+                <View style={styles.grid}>
+                    {languages.map((lang) => (
+                        <TouchableOpacity
+                            key={lang.code}
+                            onPress={() => onSelect(lang)}
+                            style={styles.card}
+                            activeOpacity={0.7}
+                        >
+                            <Text style={styles.nativeText}>{lang.native}</Text>
+                            <Text style={styles.label}>{lang.label}</Text>
+                        </TouchableOpacity>
+                    ))}
+                </View>
+            </ScrollView>
         </Animated.View>
     );
 };
@@ -77,7 +96,7 @@ const styles = StyleSheet.create({
     },
     headerContainer: {
         marginBottom: 24,
-        marginTop: 16,
+        marginTop: 50,
     },
     titleRow: {
         flexDirection: 'row',

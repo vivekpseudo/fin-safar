@@ -31,6 +31,15 @@ export const FarmerModule: React.FC<FarmerModuleProps> = ({ onComplete }) => {
     const [harvestData, setHarvestData] = useState<HarvestData>({ yieldQty: 0, costs: 0, cropLoss: 0, insurancePayout: 0, loanCost: 0, insuranceCost: 0 });
     const [finalProfit, setFinalProfit] = useState(0);
 
+    const onNewSeason = () => {
+        setLoanType(null);
+        setInsurance(null);
+        setWeather(null);
+        setHarvestData({ yieldQty: 0, costs: 0, cropLoss: 0, insurancePayout: 0, loanCost: 0, insuranceCost: 0 });
+        setFinalProfit(0);
+        setStep('planning');
+    }
+
     const calculateHarvest = () => {
         const rand = Math.random();
         let currentWeather: 'good' | 'drought' | 'flood' = 'good';
@@ -215,7 +224,7 @@ export const FarmerModule: React.FC<FarmerModuleProps> = ({ onComplete }) => {
                             </View>
                         </View>
 
-                        <Button onClick={() => setStep('planning')} variant="outline">
+                        <Button onClick={() => onNewSeason()} variant="outline">
                             <Text style={styles.outlineButtonText}>{t('modules.farmer.summary.next')}</Text>
                         </Button>
                     </View>

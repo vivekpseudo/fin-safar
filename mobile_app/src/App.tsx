@@ -141,7 +141,7 @@ export const AppNavigation = () => {
         const newBadges = hasBadge ? userState.badges : [...userState.badges, badgeName];
         const newCoins = userState.coins + coinsEarned;
         UserService.updateUser({ coins: newCoins, badges: newBadges });
-        navigation.goBack();
+        // navigation.goBack();
     };
 
     if (!isLoaded || !userState) return null;

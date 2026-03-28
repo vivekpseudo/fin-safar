@@ -104,18 +104,18 @@ export const ScamSmashGame: React.FC<ScamSmashGameProps> = ({ onComplete }) => {
                         <View style={styles.messageCard}>
                             <Smartphone size={32} color="#94a3b8" style={styles.messageIcon} />
                             <Text style={styles.messageText}>{activeMessage.text}</Text>
-                            
+
                             <View style={styles.actionsContainer}>
-                                <TouchableOpacity 
-                                    style={[styles.actionButton, styles.blockButton]} 
+                                <TouchableOpacity
+                                    style={[styles.actionButton, styles.blockButton]}
                                     onPress={() => handleDecision('block')}
                                 >
                                     <Ban size={20} color="#b91c1c" />
                                     <Text style={styles.blockText}>{t('games.scamSmash.actions.block')}</Text>
                                 </TouchableOpacity>
-                                
-                                <TouchableOpacity 
-                                    style={[styles.actionButton, styles.acceptButton]} 
+
+                                <TouchableOpacity
+                                    style={[styles.actionButton, styles.acceptButton]}
                                     onPress={() => handleDecision('accept')}
                                 >
                                     <Unlock size={20} color="#15803d" />
@@ -126,7 +126,7 @@ export const ScamSmashGame: React.FC<ScamSmashGameProps> = ({ onComplete }) => {
                     ) : (
                         <Text style={styles.scanningText}>{t('games.scamSmash.scanning')}</Text>
                     )}
-                    
+
                     <Text style={styles.hintText}>{t('games.scamSmash.tapFast')}</Text>
                 </View>
             )}
@@ -135,13 +135,13 @@ export const ScamSmashGame: React.FC<ScamSmashGameProps> = ({ onComplete }) => {
                 <View style={styles.endContainer}>
                     <Text style={styles.timesUpText}>{t('games.scamSmash.timesUp')}</Text>
                     <Text style={styles.finalScoreText}>{t('games.scamSmash.score')}: {score}</Text>
-                    
+
                     {score > 30 ? (
                         <Text style={styles.wonText}>{t('games.scamSmash.won')}</Text>
                     ) : (
                         <Text style={styles.lostText}>{t('games.scamSmash.lost')}</Text>
                     )}
-                    
+
                     <Button onClick={() => onComplete(score > 30 ? 100 : 20, "Cyber Guardian")}>
                         <Text style={styles.buttonText}>{t('games.scamSmash.finish')}</Text>
                     </Button>
@@ -155,6 +155,7 @@ const styles = StyleSheet.create({
     container: {
         marginTop: 16,
         marginBottom: 16,
+        padding: 16,
     },
     introCard: {
         backgroundColor: '#fef2f2',
@@ -232,6 +233,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 10,
         elevation: 5,
+        marginTop: 16,
     },
     messageIcon: {
         marginBottom: 12,

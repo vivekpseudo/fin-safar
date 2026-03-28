@@ -7,6 +7,24 @@ import kn from './locales/kn';
 import mr from './locales/mr';
 import ta from './locales/ta';
 import te from './locales/te';
+import bn from './locales/bn';
+import gu from './locales/gu';
+import ml from './locales/ml';
+import orLang from './locales/or';
+import pa from './locales/pa';
+import ur from './locales/ur';
+import asLang from './locales/as';
+import br from './locales/br';
+import doLang from './locales/do';
+import ks from './locales/ks';
+import ko from './locales/ko';
+import mai from './locales/mai';
+import mni from './locales/mni';
+import ne from './locales/ne';
+import sa from './locales/sa';
+import sat from './locales/sat';
+import sd from './locales/sd';
+
 
 const STORE_LANGUAGE_KEY = 'settings.lang';
 
@@ -43,12 +61,10 @@ i18n
     .use(languageDetectorPlugin)
     .init({
         resources: {
-            en,
-            hi,
-            kn,
-            mr,
-            ta,
-            te
+            en, hi, kn, mr, ta, te,
+            bn, gu, ml, or: orLang, pa, ur,
+            as: asLang, br, do: doLang, ks, ko,
+            mai, mni, ne, sa, sat, sd
         },
         fallbackLng: 'en',
         interpolation: {

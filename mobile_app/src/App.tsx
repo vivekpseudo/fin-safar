@@ -28,6 +28,7 @@ const Tab = createBottomTabNavigator();
 
 const MainTabs = ({ userState, setUserState, onLogout }: any) => {
     const { t } = useTranslation();
+    const [showTip, setShowTip] = useState(true);
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
@@ -43,35 +44,35 @@ const MainTabs = ({ userState, setUserState, onLogout }: any) => {
                 tabBarLabelStyle: { fontWeight: 'bold' }
             })}
         >
-            <Tab.Screen 
-                name="HomeTab" 
+            <Tab.Screen
+                name="HomeTab"
                 options={{ title: t('app.home') || 'Home' }}
             >
                 {(props) => (
-                    <HomePage 
-                        {...props} 
-                        userState={userState} 
-                        showTip={true} 
-                        setShowTip={() => {}} 
-                        selectPersona={(id) => props.navigation.navigate('ModuleParams', { personaId: id })} 
+                    <HomePage
+                        {...props}
+                        userState={userState}
+                        showTip={showTip}
+                        setShowTip={setShowTip}
+                        selectPersona={(id) => props.navigation.navigate('ModuleParams', { personaId: id })}
                     />
                 )}
             </Tab.Screen>
-            <Tab.Screen 
-                name="LearnTab" 
-                component={LearnPage} 
+            <Tab.Screen
+                name="LearnTab"
+                component={LearnPage}
                 options={{ title: t('app.learn') || 'Learn' }}
             />
-            <Tab.Screen 
-                name="ProfileTab" 
+            <Tab.Screen
+                name="ProfileTab"
                 options={{ title: t('app.profile') || 'Profile' }}
             >
                 {(props) => (
-                    <ProfilePage 
-                        {...props} 
-                        userState={userState} 
-                        setUserState={setUserState} 
-                        onLogout={onLogout} 
+                    <ProfilePage
+                        {...props}
+                        userState={userState}
+                        setUserState={setUserState}
+                        onLogout={onLogout}
                     />
                 )}
             </Tab.Screen>
@@ -82,7 +83,7 @@ const MainTabs = ({ userState, setUserState, onLogout }: any) => {
 export const AppNavigation = () => {
     const { i18n } = useTranslation();
     const [userState, setUserState] = useState<UserState | null>(null);
-    const [authStep, setAuthStep] = useState<'splash'|'language'|'carousel'|'auth'|'done'>('splash');
+    const [authStep, setAuthStep] = useState<'splash' | 'language' | 'carousel' | 'auth' | 'done'>('splash');
     const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect(() => {
@@ -172,16 +173,16 @@ export const AppNavigation = () => {
                     <>
                         <Stack.Screen name="MainTabs">
                             {(props) => (
-                                <MainTabs 
-                                    {...props} 
-                                    userState={userState} 
-                                    setUserState={UserService.updateUser.bind(UserService)} 
-                                    onLogout={handleLogout} 
+                                <MainTabs
+                                    {...props}
+                                    userState={userState}
+                                    setUserState={UserService.updateUser.bind(UserService)}
+                                    onLogout={handleLogout}
                                 />
                             )}
                         </Stack.Screen>
-                        <Stack.Screen 
-                            name="ModuleParams" 
+                        <Stack.Screen
+                            name="ModuleParams"
                             options={{ headerShown: true, title: 'Journey', headerBackTitle: 'Back', headerTintColor: '#ea580c' }}
                         >
                             {({ route, navigation }: any) => {
@@ -192,22 +193,22 @@ export const AppNavigation = () => {
                                     case 'woman': return <WomanModule onComplete={onComplete} />;
                                     case 'student': return <StudentModule onComplete={onComplete} />;
                                     case 'young_adult': return <YoungAdultModule onComplete={onComplete} />;
-                                    default: return <HomePage userState={userState} showTip={false} setShowTip={() => {}} selectPersona={() => {}} />;
+                                    default: return <HomePage userState={userState} showTip={false} setShowTip={() => { }} selectPersona={() => { }} />;
                                 }
                             }}
                         </Stack.Screen>
-                        <Stack.Screen 
-                            name="LanguageSelection" 
+                        <Stack.Screen
+                            name="LanguageSelection"
                             options={{ headerShown: true, title: 'Select Language', headerBackTitle: 'Back', headerTintColor: '#ea580c' }}
                         >
                             {(props) => (
-                                <LanguageSelection 
-                                    {...props} 
+                                <LanguageSelection
+                                    {...props}
                                     onSelect={(lang: any) => {
                                         i18n.changeLanguage(lang.code);
                                         UserService.updateUser({ language: lang.code });
                                         props.navigation.goBack();
-                                    }} 
+                                    }}
                                 />
                             )}
                         </Stack.Screen>

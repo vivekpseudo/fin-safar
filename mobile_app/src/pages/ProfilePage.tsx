@@ -68,7 +68,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ userState, setUserStat
 
                 <View style={styles.settingsContent}>
                     {/* Language Setting */}
-                    <TouchableOpacity 
+                    <TouchableOpacity
                         style={styles.settingRow}
                         onPress={() => navigation.navigate('LanguageSelection')}
                     >
@@ -116,9 +116,9 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ userState, setUserStat
                 </View>
             </View>
 
-            <Button 
-                variant="outline" 
-                onClick={onLogout} 
+            <Button
+                variant="outline"
+                onClick={onLogout}
                 className="logout-button" // Handled by Button component's variant if needed, but styling directly is better
                 style={styles.logoutButton}
                 textStyle={styles.logoutButtonText}
@@ -151,6 +151,7 @@ const styles = StyleSheet.create({
         shadowRadius: 2,
         elevation: 1,
         marginBottom: 24,
+        marginTop: 40,
     },
     avatarContainer: {
         width: 96,

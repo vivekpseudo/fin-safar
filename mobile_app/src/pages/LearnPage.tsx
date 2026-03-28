@@ -1,25 +1,26 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Linking, Alert } from 'react-native';
 import { FileText, Video, Image as ImageIcon, PlayCircle, Download } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 
-interface LearnPageProps {}
+interface LearnPageProps { }
 
 export const LearnPage: React.FC<LearnPageProps> = () => {
     const { t } = useTranslation();
     const [filter, setFilter] = useState<'all' | 'video' | 'doc'>('all');
 
     const resources = [
-        { id: 1, type: 'pdf', title: t('learn.resources.r1'), size: '2.4 MB' },
-        { id: 2, type: 'video', title: t('learn.resources.r2'), duration: '4:20 mins' },
-        { id: 3, type: 'image', title: t('learn.resources.r3'), size: 'Image' },
-        { id: 4, type: 'pdf', title: t('learn.resources.r4'), size: '1.1 MB' },
-        { id: 5, type: 'ppt', title: t('learn.resources.r5'), size: '5 MB' },
-        { id: 6, type: 'video', title: t('learn.resources.r6'), duration: '2:15 mins' },
+        { id: 1, type: 'pdf', title: t('learn.resources.r1'), size: '2.4 MB', url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' },
+        { id: 2, type: 'video', title: t('learn.resources.r2'), duration: '4:20 mins', url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' },
+        { id: 7, type: 'video', title: t('learn.resources.r2'), duration: '4:20 mins', url: 'https://www.youtube.com/watch?v=-YuDYDvIGCk' },
+        { id: 3, type: 'image', title: t('learn.resources.r3'), size: 'Image', url: 'https://via.placeholder.com/300' },
+        { id: 4, type: 'pdf', title: t('learn.resources.r4'), size: '1.1 MB', url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' },
+        { id: 5, type: 'ppt', title: t('learn.resources.r5'), size: '5 MB', url: 'https://sample-videos.com/ppt/Sample-PPT-File-500kb.ppt' },
+        { id: 6, type: 'video', title: t('learn.resources.r6'), duration: '2:15 mins', url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' },
     ];
 
-    const filteredResources = filter === 'all' 
-        ? resources 
+    const filteredResources = filter === 'all'
+        ? resources
         : resources.filter(r => r.type === filter || (filter === 'doc' && (r.type === 'pdf' || r.type === 'ppt')));
 
     const getIcon = (type: string) => {
@@ -36,22 +37,22 @@ export const LearnPage: React.FC<LearnPageProps> = () => {
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
             <View style={styles.header}>
                 <Text style={styles.title}>{t('learn.title')}</Text>
-                
+
                 <View style={styles.filterContainer}>
-                    <TouchableOpacity 
-                        onPress={() => setFilter('all')} 
+                    <TouchableOpacity
+                        onPress={() => setFilter('all')}
                         style={[styles.filterButton, filter === 'all' && styles.filterButtonActive]}
                     >
                         <Text style={[styles.filterText, filter === 'all' && styles.filterTextActive]}>{t('learn.filter.all')}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity 
-                        onPress={() => setFilter('video')} 
+                    <TouchableOpacity
+                        onPress={() => setFilter('video')}
                         style={[styles.filterButton, filter === 'video' && styles.filterButtonActive]}
                     >
                         <Text style={[styles.filterText, filter === 'video' && styles.filterTextActive]}>{t('learn.filter.video')}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity 
-                        onPress={() => setFilter('doc')} 
+                    <TouchableOpacity
+                        onPress={() => setFilter('doc')}
                         style={[styles.filterButton, filter === 'doc' && styles.filterButtonActive]}
                     >
                         <Text style={[styles.filterText, filter === 'doc' && styles.filterTextActive]}>{t('learn.filter.doc')}</Text>
@@ -71,7 +72,25 @@ export const LearnPage: React.FC<LearnPageProps> = () => {
                                 <Text style={styles.resourceMeta}>{res.type.toUpperCase()} • {res.size || res.duration}</Text>
                             </View>
                         </View>
-                        <TouchableOpacity style={styles.actionButton}>
+                        <TouchableOpacity
+                            style={styles.actionButton}
+                            onPress={async () => {
+                                if (res.url) {
+                                    try {
+                                        const supported = await Linking.canOpenURL(res.url);
+                                        if (supported) {
+                                            await Linking.openURL(res.url);
+                                        } else {
+                                            Alert.alert('Error', `Cannot open URL: ${res.url}`);
+                                        }
+                                    } catch (error) {
+                                        Alert.alert('Error', 'Something went wrong while opening the link.');
+                                    }
+                                } else {
+                                    Alert.alert('Info', 'Link not available yet.');
+                                }
+                            }}
+                        >
                             {res.type === 'video' ? <PlayCircle size={24} color="#94a3b8" /> : <Download size={24} color="#94a3b8" />}
                         </TouchableOpacity>
                     </View>
@@ -95,6 +114,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: 24,
+        marginTop: 40,
     },
     title: {
         fontSize: 24,

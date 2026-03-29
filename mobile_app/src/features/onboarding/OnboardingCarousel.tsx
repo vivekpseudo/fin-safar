@@ -149,6 +149,7 @@ const styles = StyleSheet.create({
         color: '#ffffff',
         fontWeight: 'bold',
         fontSize: 16,
+        lineHeight: 26,
     },
     buttonIcon: {
         marginLeft: 8,

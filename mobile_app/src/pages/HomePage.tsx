@@ -1,9 +1,13 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ImageBackground } from 'react-native';
 import { Sprout, Home as HomeIcon, BookOpen, Briefcase, Trophy, ShieldCheck, Coins, TrendingUp } from 'lucide-react-native';
 import { Badge } from '../components/ui/Badge';
 import { TipCard } from '../components/ui/TipCard';
 import { useTranslation } from 'react-i18next';
+import kisan from "../../assets/images/kisan.png";
+import student from "../../assets/images/student.png";
+import woman from "../../assets/images/woman.png";
+import professional from "../../assets/images/professional.png";
 
 interface HomePageProps {
     userState: any;
@@ -13,10 +17,10 @@ interface HomePageProps {
 }
 
 const Personas = [
-    { id: 'farmer', icon: Sprout, color: '#16a34a', bg: '#f0fdf4' }, // green
-    { id: 'woman', icon: HomeIcon, color: '#9333ea', bg: '#faf5ff' }, // purple
-    { id: 'student', icon: BookOpen, color: '#2563eb', bg: '#eff6ff' }, // blue
-    { id: 'young_adult', icon: Briefcase, color: '#4f46e5', bg: '#eef2ff' }, // indigo
+    { id: 'farmer', icon: Sprout, color: '#16a34a', bg: '#f0fdf4', bgImg: kisan }, // green
+    { id: 'woman', icon: HomeIcon, color: '#9333ea', bg: '#faf5ff', bgImg: woman }, // purple
+    { id: 'student', icon: BookOpen, color: '#2563eb', bg: '#eff6ff', bgImg: student }, // blue
+    { id: 'young_adult', icon: Briefcase, color: '#4f46e5', bg: '#eef2ff', bgImg: professional }, // indigo
 ];
 
 export const HomePage: React.FC<HomePageProps> = ({ userState, showTip, setShowTip, selectPersona }) => {
@@ -49,13 +53,17 @@ export const HomePage: React.FC<HomePageProps> = ({ userState, showTip, setShowT
                             style={styles.card}
                             activeOpacity={0.7}
                         >
-                            <View style={[styles.iconContainer, { backgroundColor: p.bg }]}>
-                                <p.icon size={28} color={p.color} />
-                            </View>
-                            <View style={styles.textContainer}>
-                                <Text style={styles.cardTitle}>{t(`home.personas.${langKey}.title`)}</Text>
-                                <Text style={styles.cardDesc}>{t(`home.personas.${langKey}.desc`)}</Text>
-                            </View>
+                            <ImageBackground
+
+                                style={styles.cardBgImg}
+                                imageStyle={styles.cardBgImg}
+                                source={p.bgImg}>
+
+                                <View style={styles.textContainer}>
+                                    <Text style={styles.cardTitle}>{t(`home.personas.${langKey}.title`)}</Text>
+                                    <Text style={styles.cardDesc}>{t(`home.personas.${langKey}.desc`)}</Text>
+                                </View>
+                            </ImageBackground>
                         </TouchableOpacity>
                     );
                 })}
@@ -97,7 +105,7 @@ const styles = StyleSheet.create({
     },
     header: {
         alignItems: 'center',
-        marginVertical: 30,
+        marginTop: 50,
     },
     welcomeText: {
         fontSize: 28,
@@ -123,7 +131,6 @@ const styles = StyleSheet.create({
     card: {
         width: '48%',
         backgroundColor: '#ffffff',
-        padding: 16,
         borderRadius: 16,
         marginBottom: 16,
         borderWidth: 1,
@@ -133,6 +140,8 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.05,
         shadowRadius: 2,
         elevation: 1,
+        padding: 16,
+
     },
     iconContainer: {
         padding: 12,
@@ -142,6 +151,10 @@ const styles = StyleSheet.create({
     },
     textContainer: {
         flex: 1,
+        marginTop: 100,
+        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        justifyContent: 'flex-end',
+        alignItems: 'center'
     },
     cardTitle: {
         fontSize: 16,
@@ -153,6 +166,10 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: '#64748b',
         lineHeight: 16,
+    },
+    cardBgImg: {
+        width: '100%',
+        resizeMode: 'stretch',
     },
     badgesSection: {
         backgroundColor: '#ffffff',

@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ImageBackground } from 'react-native';
 import { Sprout, ShieldCheck, X, CloudRain, Sun, Trophy } from 'lucide-react-native';
 import { Button } from '../../components/ui/Button';
 import { MarketMandiGame } from '../games/MarketMandiGame';
 import { useTranslation } from 'react-i18next';
+import SeasonalBackground from '../../components/SeasonalBackground';
+
+import lender from "../../../assets/images/lender.png";
+import bank from "../../../assets/images/kkc.png";
 
 interface FarmerModuleProps {
     onComplete: (score: number, badge: string) => void;
@@ -23,21 +27,35 @@ export const FarmerModule: React.FC<FarmerModuleProps> = ({ onComplete }) => {
     const [step, setStep] = useState<'planning' | 'season' | 'result' | 'mandi' | 'final'>('planning');
     const [loanType, setLoanType] = useState<'bank' | 'moneylender' | null>(null);
     const [insurance, setInsurance] = useState<boolean | null>(null);
-    const [weather, setWeather] = useState<'good' | 'drought' | null>(null);
+    const [weather, setWeather] = useState<'good' | 'drought' | 'flood' | null>(null);
     const [harvestData, setHarvestData] = useState<HarvestData>({ yieldQty: 0, costs: 0, cropLoss: 0, insurancePayout: 0, loanCost: 0, insuranceCost: 0 });
     const [finalProfit, setFinalProfit] = useState(0);
 
+    const onNewSeason = () => {
+        setLoanType(null);
+        setInsurance(null);
+        setWeather(null);
+        setHarvestData({ yieldQty: 0, costs: 0, cropLoss: 0, insurancePayout: 0, loanCost: 0, insuranceCost: 0 });
+        setFinalProfit(0);
+        setStep('planning');
+    }
+
     const calculateHarvest = () => {
-        const isDrought = Math.random() > 0.5;
-        setWeather(isDrought ? 'drought' : 'good');
+        const rand = Math.random();
+        let currentWeather: 'good' | 'drought' | 'flood' = 'good';
+        if (rand < 0.33) currentWeather = 'drought';
+        else if (rand < 0.66) currentWeather = 'flood';
+
+        setWeather(currentWeather);
 
         const baseQty = 2000;
         let loanCost = loanType === 'moneylender' ? 15000 : 5000;
         let insuranceCost = insurance ? 2000 : 0;
 
-        let actualQty = isDrought ? baseQty * 0.4 : baseQty;
-        let _cropLossValue = isDrought ? (insurance ? 0 : 20000) : 0;
-        let insurancePayout = (isDrought && insurance) ? 15000 : 0;
+        const isBadWeather = currentWeather === 'drought' || currentWeather === 'flood';
+        let actualQty = isBadWeather ? baseQty * 0.4 : baseQty;
+        let _cropLossValue = isBadWeather ? (insurance ? 0 : 20000) : 0;
+        let insurancePayout = (isBadWeather && insurance) ? 15000 : 0;
 
         setHarvestData({
             yieldQty: actualQty,
@@ -52,10 +70,14 @@ export const FarmerModule: React.FC<FarmerModuleProps> = ({ onComplete }) => {
     };
 
     const handleMandiSale = (revenue: number, _pricePerKg: number) => {
-        const profit = revenue + harvestData.insurancePayout - harvestData.costs;
-        setFinalProfit(profit);
-        setStep('final');
-        if (profit > 20000) onComplete(100, "Harvest Hero");
+        try {
+            const profit = revenue + harvestData.insurancePayout - harvestData.costs;
+            setFinalProfit(profit);
+            setStep('final');
+            if (profit > 20000) onComplete(100, "Harvest Hero");
+        } catch (error) {
+            console.error("Error in handleMandiSale:", error);
+        }
     };
 
     return (
@@ -77,15 +99,23 @@ export const FarmerModule: React.FC<FarmerModuleProps> = ({ onComplete }) => {
                                 onPress={() => setLoanType('moneylender')}
                                 style={[styles.optionCard, loanType === 'moneylender' ? styles.optionSelectedOrange : undefined]}
                             >
-                                <Text style={styles.optionTitle}>{t('modules.farmer.planning.moneylender.title')}</Text>
-                                <Text style={styles.optionDesc}>{t('modules.farmer.planning.moneylender.desc')}</Text>
+                                <ImageBackground source={lender} style={styles.optionCardBgImg} imageStyle={styles.optionCardBgImg}>
+                                    <View style={styles.optionTextWapper}>
+                                        <Text style={styles.optionTitle}>{t('modules.farmer.planning.moneylender.title')}</Text>
+                                        <Text style={styles.optionDesc}>{t('modules.farmer.planning.moneylender.desc')}</Text>
+                                    </View>
+                                </ImageBackground>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 onPress={() => setLoanType('bank')}
                                 style={[styles.optionCard, loanType === 'bank' ? styles.optionSelectedTeal : undefined]}
                             >
-                                <Text style={styles.optionTitle}>{t('modules.farmer.planning.bank.title')}</Text>
-                                <Text style={styles.optionDesc}>{t('modules.farmer.planning.bank.desc')}</Text>
+                                <ImageBackground source={bank} style={styles.optionCardBgImg} imageStyle={styles.optionCardBgImg}>
+                                    <View style={styles.optionTextWapper}>
+                                        <Text style={styles.optionTitle}>{t('modules.farmer.planning.bank.title')}</Text>
+                                        <Text style={styles.optionDesc}>{t('modules.farmer.planning.bank.desc')}</Text>
+                                    </View>
+                                </ImageBackground>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -93,7 +123,7 @@ export const FarmerModule: React.FC<FarmerModuleProps> = ({ onComplete }) => {
                     {loanType && (
                         <View style={styles.section}>
                             <Text style={styles.sectionTitle}>{t('modules.farmer.planning.step2')}</Text>
-                            <View style={styles.optionsGrid}>
+                            <View style={[styles.optionsGrid, { flexDirection: 'column' }]}>
                                 <TouchableOpacity
                                     onPress={() => setInsurance(true)}
                                     style={[styles.insuranceCard, insurance === true ? styles.insuranceSelectedBlue : undefined]}
@@ -121,77 +151,86 @@ export const FarmerModule: React.FC<FarmerModuleProps> = ({ onComplete }) => {
             )}
 
             {step === 'result' && (
-                <View style={[styles.stepContainer, styles.centerContent]}>
-                    <View style={styles.weatherIconContainer}>
-                        {weather === 'drought' ? <CloudRain size={64} color="#94a3b8" /> : <Sun size={64} color="#eab308" />}
-                    </View>
-                    <Text style={styles.weatherTitle}>
-                        {weather === 'drought' ? t('modules.farmer.result.drought') : t('modules.farmer.result.rain')}
-                    </Text>
+                <SeasonalBackground
+                    type={weather === 'drought' ? 'drought' : weather === 'flood' ? 'flood' : 'rain'}
+                    style={[styles.stepContainer, styles.centerContent, { overflow: 'hidden', paddingVertical: 40, borderRadius: 12 }]}
+                >
+                    <View style={{ marginTop: 150, marginBottom: 100, marginHorizontal: 10, backgroundColor: 'rgba(255,255,255,0.5)', padding: 16, borderRadius: 12, width: '100%', alignItems: 'center' }}>
+                        <Text style={styles.weatherTitle}>
+                            {weather === 'drought' && t('modules.farmer.result.drought')}
+                            {weather === 'flood' && t('modules.farmer.result.flood', 'Flood Disaster!')}
+                            {weather === 'good' && t('modules.farmer.result.rain')}
+                        </Text>
 
-                    <View style={styles.resultDetailsCard}>
-                        <View style={styles.resultRow}>
-                            <Text style={styles.resultLabel}>{t('modules.farmer.result.yield')}</Text>
-                            <Text style={styles.resultValue}>{harvestData.yieldQty} kg</Text>
-                        </View>
-                        {weather === 'drought' && insurance && (
+                        <View style={styles.resultDetailsCard}>
                             <View style={styles.resultRow}>
-                                <Text style={[styles.resultLabel, styles.greenText]}>{t('modules.farmer.result.payout')}</Text>
-                                <Text style={[styles.resultValue, styles.greenText]}>+ ₹{harvestData.insurancePayout}</Text>
+                                <Text style={styles.resultLabel}>{t('modules.farmer.result.yield')}</Text>
+                                <Text style={styles.resultValue}>{harvestData.yieldQty} kg</Text>
                             </View>
-                        )}
-                        {weather === 'drought' && !insurance && (
-                            <Text style={styles.dangerNotice}>{t('modules.farmer.result.lowYield')}</Text>
-                        )}
-                    </View>
-
-                    <Button onClick={() => setStep('mandi')}>
-                        <Text style={styles.buttonText}>{t('modules.farmer.result.goMandi')}</Text>
-                    </Button>
-                </View>
-            )}
-
-            {step === 'mandi' && (
-                <MarketMandiGame harvestQty={harvestData.yieldQty} onSellComplete={handleMandiSale} />
-            )}
-
-            {step === 'final' && (
-                <View style={[styles.stepContainer, styles.centerContent]}>
-                    <Trophy size={64} color={finalProfit > 20000 ? "#eab308" : "#cbd5e1"} style={styles.trophyIcon} />
-                    <Text style={styles.finalTitle}>{t('modules.farmer.summary.title')}</Text>
-
-                    <View style={styles.summaryCard}>
-                        <View style={styles.summaryRow}>
-                            <Text style={styles.summaryLabelGreen}>{t('modules.farmer.summary.revenue')}</Text>
-                            <Text style={styles.summaryValueGreen}>+ ₹{(finalProfit + harvestData.costs - harvestData.insurancePayout).toLocaleString()}</Text>
+                            {(weather === 'drought' || weather === 'flood') && insurance && (
+                                <View style={styles.resultRow}>
+                                    <Text style={[styles.resultLabel, styles.greenText]}>{t('modules.farmer.result.payout')}</Text>
+                                    <Text style={[styles.resultValue, styles.greenText]}>+ ₹{harvestData.insurancePayout}</Text>
+                                </View>
+                            )}
+                            {(weather === 'drought' || weather === 'flood') && !insurance && (
+                                <Text style={styles.dangerNotice}>{t('modules.farmer.result.lowYield')}</Text>
+                            )}
                         </View>
-                        {harvestData.insurancePayout > 0 && (
+
+                        <Button onClick={() => setStep('mandi')}>
+                            <Text style={styles.buttonText}>{t('modules.farmer.result.goMandi')}</Text>
+                        </Button>
+                    </View>
+                </SeasonalBackground>
+            )
+            }
+
+            {
+                step === 'mandi' && (
+                    <MarketMandiGame harvestQty={harvestData.yieldQty} onSellComplete={handleMandiSale} />
+                )
+            }
+
+            {
+                step === 'final' && (
+                    <View style={[styles.stepContainer, styles.centerContent]}>
+                        <Trophy size={64} color={finalProfit > 20000 ? "#eab308" : "#cbd5e1"} style={styles.trophyIcon} />
+                        <Text style={styles.finalTitle}>{t('modules.farmer.summary.title')}</Text>
+
+                        <View style={styles.summaryCard}>
                             <View style={styles.summaryRow}>
-                                <Text style={styles.summaryLabelGreen}>{t('modules.farmer.summary.claim')}</Text>
-                                <Text style={styles.summaryValueGreen}>+ ₹{harvestData.insurancePayout.toLocaleString()}</Text>
+                                <Text style={styles.summaryLabelGreen}>{t('modules.farmer.summary.revenue')}</Text>
+                                <Text style={styles.summaryValueGreen}>+ ₹{(finalProfit + harvestData.costs - harvestData.insurancePayout).toLocaleString()}</Text>
                             </View>
-                        )}
-                        <View style={styles.summaryRow}>
-                            <Text style={styles.summaryLabelRed}>{t('modules.farmer.summary.costs')}</Text>
-                            <Text style={styles.summaryValueRed}>- ₹{harvestData.costs.toLocaleString()}</Text>
-                        </View>
-                        
-                        <View style={styles.summaryDivider} />
-                        
-                        <View style={styles.summaryRow}>
-                            <Text style={styles.netProfitLabel}>{t('modules.farmer.summary.netProfit')}</Text>
-                            <Text style={[styles.netProfitValue, finalProfit > 0 ? styles.greenText : styles.redText]}>
-                                ₹{finalProfit.toLocaleString()}
-                            </Text>
-                        </View>
-                    </View>
+                            {harvestData.insurancePayout > 0 && (
+                                <View style={styles.summaryRow}>
+                                    <Text style={styles.summaryLabelGreen}>{t('modules.farmer.summary.claim')}</Text>
+                                    <Text style={styles.summaryValueGreen}>+ ₹{harvestData.insurancePayout.toLocaleString()}</Text>
+                                </View>
+                            )}
+                            <View style={styles.summaryRow}>
+                                <Text style={styles.summaryLabelRed}>{t('modules.farmer.summary.costs')}</Text>
+                                <Text style={styles.summaryValueRed}>- ₹{harvestData.costs.toLocaleString()}</Text>
+                            </View>
 
-                    <Button onClick={() => setStep('planning')} variant="outline">
-                        <Text style={styles.outlineButtonText}>{t('modules.farmer.summary.next')}</Text>
-                    </Button>
-                </View>
-            )}
-        </ScrollView>
+                            <View style={styles.summaryDivider} />
+
+                            <View style={styles.summaryRow}>
+                                <Text style={styles.netProfitLabel}>{t('modules.farmer.summary.netProfit')}</Text>
+                                <Text style={[styles.netProfitValue, finalProfit > 0 ? styles.greenText : styles.redText]}>
+                                    ₹{finalProfit.toLocaleString()}
+                                </Text>
+                            </View>
+                        </View>
+
+                        <Button onClick={() => onNewSeason()} variant="outline">
+                            <Text style={styles.outlineButtonText}>{t('modules.farmer.summary.next')}</Text>
+                        </Button>
+                    </View>
+                )
+            }
+        </ScrollView >
     );
 };
 
@@ -244,15 +283,16 @@ const styles = StyleSheet.create({
         marginBottom: 12,
     },
     optionsGrid: {
-        flexDirection: 'column',
-        gap: 12,
+        flexDirection: 'row',
+        gap: 10,
     },
     optionCard: {
-        padding: 16,
         borderWidth: 2,
         borderColor: '#e2e8f0',
         borderRadius: 12,
         backgroundColor: '#ffffff',
+        width: '48%',
+        padding: 2
     },
     optionSelectedOrange: {
         borderColor: '#f97316',
@@ -261,6 +301,18 @@ const styles = StyleSheet.create({
     optionSelectedTeal: {
         borderColor: '#14b8a6',
         backgroundColor: '#f0fdfa',
+    },
+    optionCardBgImg: {
+        width: '100%',
+        resizeMode: 'cover',
+        borderRadius: 12,
+    },
+    optionTextWapper: {
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        padding: 10,
+        marginTop: 100,
     },
     optionTitle: {
         fontWeight: 'bold',
@@ -271,6 +323,7 @@ const styles = StyleSheet.create({
     optionDesc: {
         fontSize: 12,
         color: '#64748b',
+        textAlign: 'justify'
     },
     insuranceCard: {
         padding: 16,
@@ -316,7 +369,7 @@ const styles = StyleSheet.create({
         marginBottom: 24,
     },
     resultDetailsCard: {
-        backgroundColor: '#f1f5f9',
+        backgroundColor: '#f1f5f9a4',
         padding: 16,
         borderRadius: 12,
         width: '100%',

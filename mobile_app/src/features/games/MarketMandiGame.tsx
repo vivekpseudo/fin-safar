@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { ShoppingBag } from 'lucide-react-native';
 import { Button } from '../../components/ui/Button';
@@ -15,10 +15,14 @@ export const MarketMandiGame: React.FC<MarketMandiGameProps> = ({ harvestQty, on
     const [price, setPrice] = useState(20);
     const [history, setHistory] = useState<number[]>([20]);
     const [sold, setSold] = useState(false);
+    const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
     const handleSell = (finalPrice: number) => {
-        setSold(true);
-        onSellComplete(finalPrice * harvestQty, finalPrice);
+        if (timerRef.current) {
+            setSold(true);
+            clearInterval(timerRef.current);
+            onSellComplete(finalPrice * harvestQty, finalPrice);
+        }
     };
 
     useEffect(() => {
@@ -29,7 +33,7 @@ export const MarketMandiGame: React.FC<MarketMandiGameProps> = ({ harvestQty, on
             return;
         }
 
-        const timer = setInterval(() => {
+        timerRef.current = setInterval(() => {
             setDay(prev => prev + 1);
 
             setPrice(prev => {
@@ -40,7 +44,10 @@ export const MarketMandiGame: React.FC<MarketMandiGameProps> = ({ harvestQty, on
             });
         }, 1500);
 
-        return () => clearInterval(timer);
+        return () => {
+            if (timerRef?.current)
+                clearInterval(timerRef.current);
+        }
     }, [sold, day]);
 
     return (
@@ -56,7 +63,7 @@ export const MarketMandiGame: React.FC<MarketMandiGameProps> = ({ harvestQty, on
             <View style={styles.chartContainer}>
                 <Text style={styles.dayText}>{t('games.mandi.currentPrice', { day })}</Text>
                 <Text style={styles.priceText}>₹{price}/kg</Text>
-                
+
                 <View style={styles.barsContainer}>
                     {history.map((h, i) => (
                         <View

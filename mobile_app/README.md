@@ -1,8 +1,25 @@
-# FinSafar Mobile App
+# FinSafar Mobile App - Financial Literacy for Bharat
+
+FinSafar is a gamified financial literacy learning platform designed to empower users across India with essential financial knowledge. Through interactive modules, role-playing personas, and engaging mini-games, users learn about saving, investing, fraud prevention, and budgeting.
 
 This is the React Native mobile application for **FinSafar**, bringing financial literacy for Bharat to iOS and Android devices. It mirrors the core functionality, gamified learning modules, and persona-based paths found in the web version, tailored for mobile touch experiences.
 
-## 📱 Features
+## 🚀 Features
+
+*   **Role-Based Learning**: Tailored learning paths for different user personas:
+    *   **Kisan (Farmer)**: Learn about crop loans, insurance (PMFBY), and market selling.
+    *   **Entrepreneur**: Master the art of separating business and household finances.
+    *   **Student**: Understand needs vs. wants and saving basics.
+    *   **Young Professional**: Discover the power of compounding and retirement planning.
+*   **Gamified Experience**:
+    *   **Market Mandi**: Simulate selling crops at the fluctuating market prices.
+    *   **Scam Smash**: Identify and block fraudulent messages and scams.
+    *   **Budget Balancer**: Allocate funds effectively between different needs.
+*   **Educational Resources**: Access a library of tips, videos, and documents.
+*   **Progress Tracking**: Earn coins and badges as you complete modules and master skills.
+*   **Multilingual Support**: (Architecture ready for multiple Indian languages).
+
+## 📱 App Capability
 - **Cross-Platform**: Built with React Native to support both iOS and Android.
 - **Push Notifications**: Integrated via Firebase Cloud Messaging (FCM).
 - **Offline Storage**: Uses AsyncStorage to save user progress, coins, and badges locally.
